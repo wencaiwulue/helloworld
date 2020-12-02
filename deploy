@@ -15,7 +15,7 @@ spec:
     spec:
       containers:
       - name: helloworld-pod
-        image: 10.1.0.163:5000/second/third:latest
+        image: 10.1.0.196:5000/second/third:latest
         imagePullPolicy: IfNotPresent
         ports:
         - containerPort: 8080
