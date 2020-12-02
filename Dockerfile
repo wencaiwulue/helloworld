@@ -2,6 +2,6 @@ FROM scratch
 
 WORKDIR app
 
-COPY ./ ./
+COPY ./helloworld ./helloworld
 
 ENTRYPOINT ["./helloworld"]
