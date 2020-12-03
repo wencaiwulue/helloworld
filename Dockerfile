@@ -1,8 +1,8 @@
-FROM golang:1.14
+FROM scratch
 
 WORKDIR /
 
-COPY Dockerfile ./Dockerfile
+COPY Dockerfile Dockerfile
 COPY main.go main.go
 COPY deploy deploy
 COPY helloworld helloworld
