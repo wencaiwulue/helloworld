@@ -1,7 +1,8 @@
 FROM scratch
 
-WORKDIR app
+WORKDIR /
 
-COPY ./helloworld ./helloworld
+COPY ./ ./
+RUN CGO_ENABLED=0 GOOS=darwin GOARCH=amd64 go build -mod=readonly -v -o /helloworld
 
 ENTRYPOINT ["./helloworld"]
