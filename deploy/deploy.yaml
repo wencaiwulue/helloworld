@@ -14,15 +14,15 @@ spec:
         app: helloworld
     spec:
       containers:
-      - name: helloworld-pod
-        image: 127.0.0.1:31984/second/third:latest
-        imagePullPolicy: IfNotPresent
-        ports:
-        - containerPort: 8080
-        resources:
-          requests:
-           memory: "64Mi"
-           cpu: "250m"
-          limits:
-           memory: "128Mi"
-           cpu: "500m"
+        - name: helloworld-pod
+          image: 10.99.92.139:5000/second/third:latest
+          imagePullPolicy: IfNotPresent
+          ports:
+            - containerPort: 8080
+          resources:
+            requests:
+              memory: "64Mi"
+              cpu: "250m"
+            limits:
+              memory: "128Mi"
+              cpu: "500m"
