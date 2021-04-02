@@ -30,4 +30,4 @@ jobs:
       uses: nickgronow/kubectl@v1.17.4
       with:
         config_data: ${{ secrets.kube_config }}
-        args: 'create configmap testcreate --from-literal=id=${{${{ steps.commitid.outputs }}}}'
+        args: 'create configmap testcreate --from-literal=id=${{ steps.commitid.outputs }}'
