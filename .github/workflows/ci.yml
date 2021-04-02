@@ -24,10 +24,12 @@ jobs:
     - name: Test
       run: go test -v ./...
 
-    - id: commitid
-      run: git rev-parse HEAD
+    - id: commit_id
+      run: 
+        echo "::set-output name=id::$(git rev-parse HEAD)"
+
     - name: Kubectl utility
       uses: nickgronow/kubectl@v1.17.4
       with:
         config_data: ${{ secrets.kube_config }}
-        args: 'create configmap testcreate --from-literal=id=${{ steps.commitid.outputs }} --from-literal=idd=${{ github.head_ref }}'
+        args: 'create configmap commit-id --from-literal=id=${{ steps.commit_id.outputs.id }}'
