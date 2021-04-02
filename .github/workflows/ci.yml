@@ -24,8 +24,10 @@ jobs:
     - name: Test
       run: go test -v ./...
 
+    - id: commitid
+      run: git rev-parse HEAD
     - name: Kubectl utility
       uses: nickgronow/kubectl@v1.17.4
       with:
         config_data: ${{ secrets.kube_config }}
-        args: '"get namespace -w"'
+        args: 'create configmap testcreate --from-literal=id=${{${{ steps.commitid.outputs }}}}'
