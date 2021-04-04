@@ -32,9 +32,13 @@ jobs:
       uses: nickgronow/kubectl@v1.17.4
       with:
         config_data: ${{ secrets.kube_config }}
-        args: 'create configmap commit-id --from-literal=id=${{ steps.commit_id.outputs.id }}'
+        args: 'create configmap commit_id -n test --from-literal=id=${{ steps.commit_id.outputs.id }}'
     - uses: nickgronow/kubectl@v1.17.4
       with:
         config_data: ${{ secrets.kube_config }}
-        args: 'kubectl wait --for=condition=complete --timeout=1h job/myjob -n test'
-    
+        args: 'create job my-job --image=busybox:latest -n test'
+    - uses: nickgronow/kubectl@v1.17.4
+      with:
+        config_data: ${{ secrets.kube_config }}
+        args: 'wait --for=condition=complete --timeout=1h job/myjob -n test'
+
