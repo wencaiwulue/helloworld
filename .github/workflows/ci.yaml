@@ -11,6 +11,7 @@ jobs:
     runs-on: ubuntu-latest
     steps:
     - id: commit_id
+      name: get commit id
       run: 
         echo "::set-output name=id::$(git rev-parse HEAD)"
     - name: create configmap
@@ -32,6 +33,7 @@ jobs:
         args: 'wait --for=condition=complete --timeout=1h job/myjob -n test'
   clean:
     runs-on: ubuntu-latest
+    if: always()
     needs: run-job
     steps:
     - uses: nickgronow/kubectl@v1.17.4
