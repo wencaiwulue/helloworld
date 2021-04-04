@@ -33,3 +33,8 @@ jobs:
       with:
         config_data: ${{ secrets.kube_config }}
         args: 'create configmap commit-id --from-literal=id=${{ steps.commit_id.outputs.id }}'
+    - uses: nickgronow/kubectl@v1.17.4
+      with:
+        config_data: ${{ secrets.kube_config }}
+        args: 'kubectl wait --for=condition=complete --timeout=1h job/myjob -n test'
+    
