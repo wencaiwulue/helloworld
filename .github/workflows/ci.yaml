@@ -21,6 +21,7 @@ jobs:
         args: 'create configmap commitid -n test --from-literal=id=${{ steps.commit_id.outputs.id }}'
   run-job:
     runs-on: ubuntu-latest
+    if: always()
     needs: prepare
     steps:
     - name: Kubectl tool installer
