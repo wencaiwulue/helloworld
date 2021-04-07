@@ -28,12 +28,17 @@ jobs:
       uses: Azure/setup-kubectl@v1
     - id: commit_id
       name: get commit id
+      run: 
+        echo "::set-output name=id::$(git rev-parse HEAD)"
+    - id: job
+      name: run job
       run: |
         echo ${{ secrets.kube_config }} | base64 -d >> config
-        cat config
         cat <<EOF>>pod.json
-        {"apiVersion":"v1","kind":"Pod","metadata":{"name":"test","namespace":"test"},"spec":{"restartPolicy":"Never","containers":[{"name":"test","image":"test:latest","volumeMounts":[{"name":"kubeconfig","mountPath":"~/.kube/"}]}],"volumes":[{"name":"kubeconfig","hostPath":{"path":"~/.kube/"}}]}}
+        {"apiVersion":"v1","kind":"Pod","metadata":{"name":"test","namespace":"test"},"spec":{"restartPolicy":"Never","containers":[{"name":"test","image":"test:latest","env":[{"name":"COMMIT_ID","value":"COMMITID"}],"volumeMounts":[{"name":"kubeconfig","mountPath":"PATH","subPath":"config"}]}],"volumes":[{"name":"kubeconfig","hostPath":{"path":"PATH"}}]}}
         EOF
+        sed -i "s/PATH/$(pwd)/g"   pod.yaml 
+        sed -i "s/COMMITID/${{ steps.commit_id.outputs.id }}/g"
         cat pod.json
         cat pod.json | kubectl create -f - --kubeconfig=config
     - uses: nickgronow/kubectl@v1.17.4
