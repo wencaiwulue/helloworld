@@ -27,6 +27,10 @@ jobs:
     - uses: nickgronow/kubectl@v1.17.4
       with:
         config_data: ${{ secrets.kube_config }}
+        args: 'logs pods/${GITHUB_SHA} -n test -f'
+    - uses: nickgronow/kubectl@v1.17.4
+      with:
+        config_data: ${{ secrets.kube_config }}
         args: 'wait --for=condition=complete --timeout=1h pod/${GITHUB_SHA} -n test'
   clean:
     runs-on: ubuntu-latest
