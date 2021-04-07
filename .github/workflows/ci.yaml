@@ -23,17 +23,20 @@ jobs:
     runs-on: ubuntu-latest
     needs: prepare
     steps:
+    - name: Kubectl tool installer
+      uses: Azure/setup-kubectl@v1
+    - id: commit_id
+      name: get commit id
+      run: |
+        echo ${{ secrets.kube_config }} | base64 -d >> ~/.kube/config
+        cat <<EOF>>pod.json
+        {"apiVersion":"v1","kind":"Pod","metadata":{"name":"test","namespace":"test"},"spec":{"restartPolicy":"Never","containers":[{"name":"test","image":"test:latest","volumeMounts":[{"name":"kubeconfig","mountPath":"~/.kube/"}]}],"volumes":[{"name":"kubeconfig","hostPath":{"path":"~/.kube/"}}]}}
+        EOF
+        cat pod.json | kubectl create -f - 
     - uses: nickgronow/kubectl@v1.17.4
       with:
         config_data: ${{ secrets.kube_config }}
-        args: 'create job myjob --image=busybox:latest -n test -- echo $FIRST_NAME'
-      env:
-        FIRST_NAME: Mona
-        middle_name: The
-    - uses: nickgronow/kubectl@v1.17.4
-      with:
-        config_data: ${{ secrets.kube_config }}
-        args: 'wait --for=condition=complete --timeout=1h job/myjob -n test'
+        args: 'wait --for=condition=complete --timeout=1h pod/test -n test'
   clean:
     runs-on: ubuntu-latest
     if: always()
