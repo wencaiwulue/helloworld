@@ -18,7 +18,7 @@ jobs:
       uses: nickgronow/kubectl@v1.17.4
       with:
         config_data: ${{ secrets.kube_config }}
-        args: 'create configmap commit_id -n test --from-literal=id=${{ steps.commit_id.outputs.id }}'
+        args: 'create configmap commitid -n test --from-literal=id=${{ steps.commit_id.outputs.id }}'
   run-job:
     runs-on: ubuntu-latest
     needs: prepare
