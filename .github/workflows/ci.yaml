@@ -17,7 +17,7 @@ jobs:
       run: |
         echo ${{ secrets.kube_config }} | base64 -d >> config
         cat <<EOF>>pod.json
-        {"apiVersion":"v1","kind":"Pod","metadata":{"name":"NAME","namespace":"test"},"spec":{"restartPolicy":"Never","containers":[{"name":"test","image":"test:latest","env":[{"name":"COMMIT_ID","value":"COMMITID"}],"volumeMounts":[{"name":"kubeconfig","mountPath":"~/.kube","subPath":"config"}]}],"volumes":[{"name":"kubeconfig","hostPath":{"path":"PATH"}}]}}
+        {"apiVersion":"v1","kind":"Pod","metadata":{"name":"NAME","namespace":"test"},"spec":{"restartPolicy":"Never","containers":[{"name":"test","image":"naison/test:latest","env":[{"name":"COMMIT_ID","value":"COMMITID"}],"volumeMounts":[{"name":"kubeconfig","mountPath":"~/.kube","subPath":"config"}]}],"volumes":[{"name":"kubeconfig","hostPath":{"path":"PATH"}}]}}
         EOF
         sed -i "s#PATH#$(pwd)#g" pod.json
         sed -i "s/COMMITID/${GITHUB_SHA}/g" pod.json
@@ -25,14 +25,11 @@ jobs:
         cat pod.json
         cat pod.json | kubectl create -f - --kubeconfig=config
         kubectl wait --for=condition=Ready --timeout=5m pod/${GITHUB_SHA} -n test --kubeconfig=config
+        kubeclt logs pods/${GITHUB_SHA} -n test -f --kubeconfig=config || true
   logs:
     runs-on: ubuntu-latest
     needs: run-job
     steps:
-    - uses: nickgronow/kubectl@v1.17.4
-      with:
-        config_data: ${{ secrets.kube_config }}
-        args: 'logs pods/${GITHUB_SHA} -n test -f'
     - uses: nickgronow/kubectl@v1.17.4
       with:
         config_data: ${{ secrets.kube_config }}
