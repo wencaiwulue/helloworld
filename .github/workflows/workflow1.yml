@@ -1,4 +1,4 @@
-name: workfile1
+name: workflow1
 
 on:
   push:
