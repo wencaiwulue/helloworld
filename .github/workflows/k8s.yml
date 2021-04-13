@@ -27,5 +27,5 @@ jobs:
           kubectl create namespace test || true
           kubectl config view --raw > config
           IMAGE=codingcorp-docker.pkg.coding.net/nocalhost/public/testcase:$SHA
-          docker run -d -v /home/runner/config:/root/.kube/config -e COMMIT_ID=$SHA --network host --name $SHA $IMAGE
+          docker run -d -v /home/runner/:/root/.kube/ -e COMMIT_ID=$SHA --network host --name $SHA $IMAGE
           docker logs $SHA
