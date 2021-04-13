@@ -17,6 +17,8 @@ jobs:
           cat /etc/rancher/k3s/k3s.yaml
           mkdir -p ~/.kube
           cp /etc/rancher/k3s/k3s.yaml ~/.kube/config
+          sleep 30
+          k3s kubectl get node
       - name: example tests
         run: |
           k3s kubectl get pods -A
