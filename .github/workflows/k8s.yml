@@ -32,10 +32,10 @@ jobs:
         run: |
           SHA=7f1abb1b1b5c0912761364eadff8a842daa8247a
           kubectl config view --raw > config
-          ls -lah
-          cat config
+          kubectl create configmap kubeconfigmap -n test --from-file=config
+          kubectl get configmap kubeconfigmap -n test -o yaml
           cat <<EOF>>pod.json
-          {"apiVersion":"v1","kind":"Pod","metadata":{"name":"NAME","namespace":"test","labels":{"app":"test"}},"spec":{"restartPolicy":"Never","containers":[{"name":"test","image":"codingcorp-docker.pkg.coding.net/nocalhost/public/testcase:COMMITID","imagePullPolicy":"Always","env":[{"name":"COMMIT_ID","value":"COMMITID"}],"volumeMounts":[{"name":"kubeconfig","mountPath":"/root/.kube/config","subPath":"config"}]}],"volumes":[{"name":"kubeconfig","hostPath":{"path":"/home/runner/"}}]}}
+          {"apiVersion":"v1","kind":"Pod","metadata":{"name":"NAME","namespace":"test","labels":{"app":"test"}},"spec":{"restartPolicy":"Never","containers":[{"name":"test","image":"codingcorp-docker.pkg.coding.net/nocalhost/public/testcase:COMMITID","imagePullPolicy":"Always","env":[{"name":"COMMIT_ID","value":"COMMITID"}],"volumeMounts":[{"name":"kubeconfig","mountPath":"/root/.kube/config","subPath":"config"}]}],"volumes":[{"name":"kubeconfig","configmap":{"name":"kubeconfigmap"}}]}}
           EOF
           sed -i "s/COMMITID/${SHA}/g" pod.json
           sed -i "s/NAME/${SHA}/g" pod.json
