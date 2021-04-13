@@ -12,6 +12,14 @@ jobs:
     steps:
       - uses: actions/checkout@master
       - uses: engineerd/setup-kind@v0.5.0
+      - name: config
+        run: |
+          echo "current-context:" $(kubectl config current-context)
+          echo "environment-kubeconfig:" ${KUBECONFIG}
+          echo ${KUBECONFIG} > a.txt
+          ls -lha a.txt
+          cat a.txt
+        
       - name: Testing
         run: |
           kubectl cluster-info
