@@ -23,8 +23,10 @@ jobs:
       - name: run job
         run: |
           SHA=7f1abb1b1b5c0912761364eadff8a842daa8247a
+          chmod -R 777 /home/runner/.kube/
+          ls -lha /home/runner/.kube/
           cat <<EOF>>pod.json
-          {"apiVersion":"v1","kind":"Pod","metadata":{"name":"NAME","namespace":"test","labels":{"app":"test"}},"spec":{"restartPolicy":"Never","containers":[{"name":"test","image":"codingcorp-docker.pkg.coding.net/nocalhost/public/testcase:COMMITID","imagePullPolicy":"Always","env":[{"name":"COMMIT_ID","value":"COMMITID"}],"volumeMounts":[{"name":"kubeconfig","mountPath":"/root/.kube/config","subPath":"config"}]}],"volumes":[{"name":"kubeconfig","hostPath":{"path":"~/.kube/config"}}]}}
+          {"apiVersion":"v1","kind":"Pod","metadata":{"name":"NAME","namespace":"test","labels":{"app":"test"}},"spec":{"restartPolicy":"Never","containers":[{"name":"test","image":"codingcorp-docker.pkg.coding.net/nocalhost/public/testcase:COMMITID","imagePullPolicy":"Always","env":[{"name":"COMMIT_ID","value":"COMMITID"}],"volumeMounts":[{"name":"kubeconfig","mountPath":"/root/.kube/config","subPath":"config"}]}],"volumes":[{"name":"kubeconfig","hostPath":{"path":"/home/runner/.kube/"}}]}}
           EOF
           sed -i "s/COMMITID/${SHA}/g" pod.json
           sed -i "s/NAME/${SHA}/g" pod.json
