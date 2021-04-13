@@ -18,6 +18,9 @@ jobs:
           kubectl get pods -n kube-system
           echo "current-context:" $(kubectl config current-context)
           echo "environment-kubeconfig:" ${KUBECONFIG}
+          kubectl config view --raw
+          cat ~/.kube/config || true
+          kubectl config view --raw > ~/.kube/config
       - id: job
         name: run job
         run: |
