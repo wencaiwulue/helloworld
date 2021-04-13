@@ -22,10 +22,9 @@ jobs:
           pwd
       - name: run job
         run: |
-          SHA=7f1abb1b1b5c0912761364eadff8a842daa8247a
+          SHA=550c6412fa505c3eebe468d2fd3b3408544724c6
           
           kubectl create namespace test || true
-          kubectl config view --raw > config
           IMAGE=codingcorp-docker.pkg.coding.net/nocalhost/public/testcase:$SHA
           docker run -d -v /home/runner/.kube/config:/root/.kube/config -e COMMIT_ID=$SHA --network host --name $SHA $IMAGE
           docker logs $SHA -f
