@@ -20,6 +20,7 @@ jobs:
           ls -lah ~/.kube/config
           cd ~/.kube/
           pwd
+          ls -lah
       - id: job
         name: run job
         run: |
