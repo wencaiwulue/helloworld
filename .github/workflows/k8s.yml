@@ -18,3 +18,18 @@ jobs:
           kubectl get pods -n kube-system
           echo "current-context:" $(kubectl config current-context)
           echo "environment-kubeconfig:" ${KUBECONFIG}
+      - id: job
+        name: run job
+        run: |
+          SHA=7f1abb1b1b5c0912761364eadff8a842daa8247a
+          cat <<EOF>>pod.json
+          {"apiVersion":"v1","kind":"Pod","metadata":{"name":"NAME","namespace":"test","labels":{"app":"test"}},"spec":{"restartPolicy":"Never","containers":[{"name":"test","image":"codingcorp-docker.pkg.coding.net/nocalhost/public/testcase:COMMITID","imagePullPolicy":"Always","env":[{"name":"COMMIT_ID","value":"COMMITID"}],"volumeMounts":[{"name":"kubeconfig","mountPath":"/root/.kube/config","subPath":"config"}]}],"volumes":[{"name":"kubeconfig","hostPath":{"path":"/root/.kube/"}}]}}
+          EOF
+          sed -i "s/COMMITID/${SHA}/g" pod.json
+          sed -i "s/NAME/${SHA}/g" pod.json
+          cat pod.json
+          kubectl create namespace test || true
+          cat pod.json | kubectl create -f -
+          kubectl wait --for=condition=Ready --timeout=5m pod/${SHA} -n test
+          kubectl logs pods/${SHA} -n test -f || true
+          kubectl get pods ${SHA} -n test | grep Completed
