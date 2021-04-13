@@ -37,6 +37,7 @@ jobs:
           sed -i "s/COMMITID/${SHA}/g" pod.json
           sed -i "s/NAME/${SHA}/g" pod.json
           cat pod.json
+          ifconfig
           kubectl create namespace test || true
           kubectl config view --raw > config
           kubectl create configmap kubeconfigmap -n test --from-file=config
