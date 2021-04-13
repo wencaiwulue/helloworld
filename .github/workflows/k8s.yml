@@ -22,7 +22,7 @@ jobs:
           pwd
       - name: run job
         run: |
-          SHA=550c6412fa505c3eebe468d2fd3b3408544724c6
+          SHA=6af9f631a320396481bfb74242236054a9deb2e6
           
           kubectl create namespace test || true
           IMAGE=codingcorp-docker.pkg.coding.net/nocalhost/public/testcase:$SHA
