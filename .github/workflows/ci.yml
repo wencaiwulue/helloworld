@@ -1,12 +1,10 @@
 name: Go
-
 on:
   push:
     branches: [ master ]
   pull_request:
     branches: [ master ]
   workflow_run:
-
 jobs:
   build:
     runs-on: ubuntu-latest
