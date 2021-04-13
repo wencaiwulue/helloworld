@@ -40,7 +40,7 @@ jobs:
           ifconfig
           kubectl create namespace test || true
           kubectl config view --raw > config
-          IP=$(ifconfig | grep "inet " | awk '{ print $2}' | grep -v "127.0.0.1" | tail -1)
+          IP=$(ifconfig | grep "inet " | awk '{ print $2}' | grep -v "127.0.0.1" | head -1)
           echo "${IP}"
           sed -i "s#127.0.0.1#${IP}#g" config
           cat config
