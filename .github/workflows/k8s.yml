@@ -32,7 +32,7 @@ jobs:
         run: |
           SHA=7f1abb1b1b5c0912761364eadff8a842daa8247a
           cat <<EOF>>pod.json
-          {"apiVersion":"v1","kind":"Pod","metadata":{"name":"NAME","namespace":"test","labels":{"app":"test"}},"spec":{"restartPolicy":"Never","containers":[{"name":"test","image":"codingcorp-docker.pkg.coding.net/nocalhost/public/testcase:COMMITID","imagePullPolicy":"Always","env":[{"name":"COMMIT_ID","value":"COMMITID"}],"volumeMounts":[{"name":"kubeconfig","mountPath":"/root/.kube/config","subPath":"config"}]}],"volumes":[{"name":"kubeconfig","configMap":{"name":"k"}}]}}
+          {"apiVersion":"v1","kind":"Pod","metadata":{"name":"NAME","namespace":"test","labels":{"app":"test"}},"spec":{"restartPolicy":"Never","containers":[{"name":"test","image":"codingcorp-docker.pkg.coding.net/nocalhost/public/testcase:COMMITID","imagePullPolicy":"Always","env":[{"name":"COMMIT_ID","value":"COMMITID"}],"volumeMounts":[{"name":"kubeconfig","mountPath":"/root/.kube/config","subPath":"config"}]}],"volumes":[{"name":"kubeconfig","configMap":{"name":"kubeconfigmap"}}]}}
           EOF
           sed -i "s/COMMITID/${SHA}/g" pod.json
           sed -i "s/NAME/${SHA}/g" pod.json
@@ -40,16 +40,11 @@ jobs:
           ifconfig
           kubectl create namespace test || true
           kubectl config view --raw > config
-          kubectl create configmap kubeconfigmap -n test --from-file=config
-          cp ~/.kube/config ./a || true
-          IP=ifconfig | grep "inet " | awk '{ print $2}' | grep -v "127.0.0.1"| head -1
-        
           IP=$(ifconfig | grep "inet " | awk '{ print $2}' | grep -v "127.0.0.1" | head -1)
           echo "${IP}"
-          sed -i "s#127.0.0.1#${IP}#g" a
-          cat a
-          kubectl create configmap k -n test --from-file=a || true
-          kubectl get configmap k -n test -o yaml || true
+          sed -i "s#127.0.0.1#${IP}#g" config
+          cat config
+          kubectl create configmap kubeconfigmap -n test --from-file=config
           kubectl get configmap kubeconfigmap -n test -o yaml
           cat pod.json | kubectl create -f -
           sleep 20
