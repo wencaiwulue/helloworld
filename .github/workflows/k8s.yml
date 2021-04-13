@@ -40,8 +40,9 @@ jobs:
           kubectl create namespace test || true
           kubectl config view --raw > config
           kubectl create configmap kubeconfigmap -n test --from-file=config
-          kubectl create configmap k -n test --from-file=~/.kube/config
-          kubectl get configmap k -n test -o yaml
+          cp ~/.kube/config ./a || true
+          kubectl create configmap k -n test --from-file=a || true
+          kubectl get configmap k -n test -o yaml || true
           kubectl get configmap kubeconfigmap -n test -o yaml
           cat pod.json | kubectl create -f -
           sleep 20
