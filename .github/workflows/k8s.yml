@@ -14,6 +14,7 @@ jobs:
       - uses: actions/checkout@master
       - uses: engineerd/setup-kind@v0.5.0
       - name: check images are alreay or not
+        timeout-minutes: 60
         run: |
           COMMIT_ID=6af9f631a320396481bfb74242236054a9deb2e6
           ProjectId=7955264
@@ -61,6 +62,7 @@ jobs:
           echo 'wait for nocalhost-dep'
           wait "DescribeArtifactProperties" "public" "nocalhost-dep" $COMMIT_ID
       - name: Testing
+        timeout-minutes: 5
         run: |
           kubectl cluster-info
           kubectl get pods -n kube-system
@@ -69,6 +71,7 @@ jobs:
           cd ~/.kube/
           pwd
       - name: run job
+        timeout-minutes: 60
         run: |
           SHA=6af9f631a320396481bfb74242236054a9deb2e6
           
