@@ -12,8 +12,10 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@master
+        timeout-minutes: 10
       - uses: engineerd/setup-kind@v0.5.0
-      - name: check images are alreay or not
+        timeout-minutes: 10
+      - name: Waiting for images to be ready
         timeout-minutes: 60
         run: |
           COMMIT_ID=6af9f631a320396481bfb74242236054a9deb2e6
@@ -61,7 +63,7 @@ jobs:
           wait "DescribeArtifactProperties" "public" "nocalhost-api" $COMMIT_ID
           echo 'wait for nocalhost-dep'
           wait "DescribeArtifactProperties" "public" "nocalhost-dep" $COMMIT_ID
-      - name: Testing
+      - name: Kubernetes info
         timeout-minutes: 5
         run: |
           kubectl cluster-info
@@ -70,7 +72,7 @@ jobs:
           ls -lah ~/.kube/config
           cd ~/.kube/
           pwd
-      - name: run job
+      - name: Testing
         timeout-minutes: 60
         run: |
           SHA=6af9f631a320396481bfb74242236054a9deb2e6
