@@ -75,10 +75,11 @@ jobs:
       - name: Testing
         timeout-minutes: 60
         run: |
-          SHA=6af9f631a320396481bfb74242236054a9deb2e6
+          SHA=6af9f631a320396481bfb74242236054a9deb2e7
           
           kubectl create namespace test || true
           IMAGE=codingcorp-docker.pkg.coding.net/nocalhost/public/testcase:$SHA
           docker run -d -v /home/runner/.kube/config:/root/.kube/config -e COMMIT_ID=$SHA --network host --name $SHA $IMAGE
           docker logs $SHA -f || true
+          docker ps -a
           ID=$(docker inspect "$(docker ps -aq --filter name=$SHA)" --format='{{.State.ExitCode}}') && echo "$ID" | grep '^1$'
