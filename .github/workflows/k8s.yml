@@ -22,6 +22,7 @@ jobs:
         run: |
           git tag | tail -2
           echo $(git tag)
+          echo ${GITHUB_REF##*/}
   kind:
     runs-on: ubuntu-latest
     steps:
