@@ -20,9 +20,7 @@ jobs:
       - name: git tag
         timeout-minutes: 60
         run: |
-          git tag list | tail -2
-          git status
-          git branch -a
+          git tag | tail -2
           echo $(git tag list)
   kind:
     runs-on: ubuntu-latest
