@@ -21,7 +21,7 @@ jobs:
         timeout-minutes: 60
         run: |
           git tag | tail -2
-          echo $(git tag list)
+          echo $(git tag)
   kind:
     runs-on: ubuntu-latest
     steps:
