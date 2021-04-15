@@ -20,7 +20,7 @@ jobs:
       - name: git tag
         timeout-minutes: 60
         run: |
-          git tag list | tail 2
+          git tag list | tail -2
   kind:
     runs-on: ubuntu-latest
     steps:
