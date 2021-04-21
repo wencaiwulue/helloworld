@@ -34,10 +34,8 @@ jobs:
           echo ${{ env.RELEASE_VERSION }}
           echo ${{ secrets.kube_config }} | base64 -d >> config
           path="$(pwd)""/config"
-          echo path
+          echo $path
           export KUBECONFIG_PATH=$path
-          cp config /root/.kube/config
-          cd /root/.kube/config
           ls -lah
           pwd
           export TAG=${{ env.RELEASE_VERSION }}
