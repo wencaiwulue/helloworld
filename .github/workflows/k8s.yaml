@@ -19,6 +19,7 @@ jobs:
           git fetch --prune --unshallow --tags
           TAG=$(echo $(git tag | tail -2))
           echo $TAG
+          TAG="v0.3.8 v0.3.9"
           echo "RELEASE_VERSION=${TAG}" >> $GITHUB_ENV
         shell: bash
       - uses: actions/checkout@master
