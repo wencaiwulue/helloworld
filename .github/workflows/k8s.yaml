@@ -1,0 +1,139 @@
+name: k8s
+
+on:
+  push:
+    branches: [ master ]
+  pull_request:
+    branches: [ master ]
+  workflow_dispatch:
+  workflow_run:
+    workflows: [ "k3s" ]
+    types: [ completed ]
+
+jobs:
+  image:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Waiting for images to be ready
+        timeout-minutes: 60
+        run: |
+          echo ${{ env.RELEASE_VERSION }}
+          COMMIT_ID=6af9f631a320396481bfb74242236054a9deb2e6
+          ProjectId=7955264
+          Token=4c13feee6b91d7c2d9ebdb7e4a5aaaf48cf27a3b
+          while true; do
+            url='https://codingcorp-generic.pkg.coding.net/nocalhost/nhctl/nhctl-linux-amd64?version='$COMMIT_ID''
+            echo "url: ""$url"
+            a=$(curl -s "$url")
+            echo "response: ""$a"
+            if [[ $a =~ "File not found" ]]; then
+              sleep 5
+            else
+              break
+            fi
+          done
+          function wait() {
+            Action=$1
+            Repository=$2
+            Package=$3
+            PackageVersion=$4
+            while true; do
+              res=$(curl -X POST -s 'https://codingcorp.coding.net/open-api' \
+                --header 'Authorization: token '$Token'' \
+                --header 'Content-Type: text/plain' \
+                --data-raw '{
+                "Action": "'"$Action"'",
+                "ProjectId": '$ProjectId',
+                "Repository": "'"$Repository"'",
+                "Package": "'"$Package"'",
+                "PackageVersion": "'"$PackageVersion"'"
+              }')
+              echo "wait for package: ""$Package""version: ""$PackageVersion"
+              echo "response: ""$res"
+              if [[ $res =~ "InstanceSet" ]]; then
+                break
+              else
+                sleep 5
+              fi
+            done
+          }
+          echo 'wait for testcase'
+          wait "DescribeArtifactProperties" "public" "testcase" $COMMIT_ID
+          echo 'wait for nocalhost-api'
+          wait "DescribeArtifactProperties" "public" "nocalhost-api" $COMMIT_ID
+          echo 'wait for nocalhost-dep'
+          wait "DescribeArtifactProperties" "public" "nocalhost-dep" $COMMIT_ID
+  windows:
+    runs-on: windows-latest
+    needs: ["image"]
+    steps:
+      - uses: actions/checkout@master
+        timeout-minutes: 10
+      - name: git tag v1
+        timeout-minutes: 60
+        run: |
+          git fetch --prune --unshallow --tags
+          TAG=$(echo $(git tag | tail -2))
+          TAG="v0.3.8 v0.3.9"
+          echo $TAG
+          echo "RELEASE_VERSION=${TAG}" >> $GITHUB_ENV
+        shell: bash
+      - uses: actions/checkout@master
+        timeout-minutes: 10
+      - name: Testing
+        timeout-minutes: 60
+        shell: bash
+        run: |
+          SHA=6af9f631a320396481bfb74242236054a9deb2e6
+          echo ${{ env.RELEASE_VERSION }}
+          curl -L  https://github.com/nocalhost/nocalhost/releases/latest/download/NocalhostInstaller.exe -o nhctlinstall.exe          
+          dir
+          pwd
+          echo $PATH
+          ./nhctlinstall.exe
+          helm version
+          kubectl version
+          
+          kubectl create namespace test || true
+          
+          kubectl create namespace test || true
+          IMAGE=codingcorp-docker.pkg.coding.net/nocalhost/public/testcase:$SHA
+          docker run -d -v /home/runner/.kube/config:/root/.kube/config -e COMMIT_ID=$SHA --network host --name $SHA $IMAGE
+          docker logs $SHA -f || true
+          docker ps -a
+          ID=$(docker inspect "$(docker ps -aq --filter name=$SHA)" --format='{{.State.ExitCode}}') && echo "$ID" | grep '^1$'
+          
+  mac:
+    runs-on: macos-latest
+    needs: ["image"]
+    if: always()
+    steps:
+      - uses: actions/checkout@master
+        timeout-minutes: 10
+      - name: git tag v1
+        timeout-minutes: 60
+        run: |
+          git fetch --prune --unshallow --tags
+          TAG=$(echo $(git tag | tail -2))
+          TAG="v0.3.8 v0.3.9"
+          echo $TAG
+          echo "RELEASE_VERSION=${TAG}" >> $GITHUB_ENV
+        shell: bash
+      - uses: actions/checkout@master
+        timeout-minutes: 10
+      - uses: debianmaster/actions-k3s@master
+        with:
+          version: v1.18.2-k3s1
+      - name: Testing
+        timeout-minutes: 60
+        shell: bash
+        run: |
+          SHA=6af9f631a320396481bfb74242236054a9deb2e6
+          echo ${{ env.RELEASE_VERSION }}
+          kubectl create namespace test || true
+          IMAGE=codingcorp-docker.pkg.coding.net/nocalhost/public/testcase:$SHA
+          docker run -d -v /home/runner/.kube/config:/root/.kube/config -e COMMIT_ID=$SHA --network host --name $SHA $IMAGE
+          docker logs $SHA -f || true
+          docker ps -a
+          ID=$(docker inspect "$(docker ps -aq --filter name=$SHA)" --format='{{.State.ExitCode}}') && echo "$ID" | grep '^1$'
+          
