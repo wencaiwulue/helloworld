@@ -14,10 +14,8 @@ jobs:
         timeout-minutes: 10
       - name: Kubectl tool installer
         uses: Azure/setup-kubectl@v1
-      - name: Lint Helm
-        uses: WyriHaximus/github-action-helm3@v2
-        with:
-          exec: helm lint ./.helm/app/
+      - name: helm 
+        uses: deliverybot/helm@v1
       - name: testing
         timeout-minutes: 60
         shell: bash
