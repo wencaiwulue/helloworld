@@ -31,17 +31,19 @@ jobs:
         shell: bash
         run: |
           SHA=e73bc95a8d231a1c88f275327d104043282bfd00
+          configmapname="$SHA""mac"
+          
           echo ${{ env.RELEASE_VERSION }}
           echo ${{ secrets.kube_config }} | base64 -d >> config
           kubectl create namespace test --kubeconfig=config || true
-          kubectl create configmap $SHA -n test --kubeconfig=config || true
+          kubectl create configmap $configmapname -n test --kubeconfig=config || true
           while true; do
             lock=$(kubectl get configmap -n test --sort-by=.metadata.creationTimestamp --no-headers --kubeconfig=config | head -1 | awk -F ' ' '{print$1}') || true
             echo "current lock: ""$lock"
             if [ -z "$lock" ]; then
               break
             fi
-            if [ "$lock" = $SHA ]; then
+            if [ "$lock" = $configmapname ]; then
               echo "got lock"
               break
             fi
@@ -60,6 +62,7 @@ jobs:
         if: always()
         run: |
           SHA=e73bc95a8d231a1c88f275327d104043282bfd00
+          configmapname="$SHA""mac"
           echo ${{ secrets.kube_config }} | base64 -d >> config
-          kubectl delete configmap $SHA -n test --kubeconfig=config || true
+          kubectl delete configmap $configmapname -n test --kubeconfig=config || true
           
