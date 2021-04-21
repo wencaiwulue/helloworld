@@ -33,6 +33,20 @@ jobs:
           SHA=e73bc95a8d231a1c88f275327d104043282bfd00
           echo ${{ env.RELEASE_VERSION }}
           echo ${{ secrets.kube_config }} | base64 -d >> config
+          
+          kubectl create configmap $SHA -n test --kubeconfig=config
+          while true; do
+            lock=$(kubectl get configmap -n test --sort-by=.metadata.creationTimestamp --no-headers --kubeconfig=config | head -1 | awk -F ' ' '{print$1}') || true
+            if [ -z "$lock" ]; then
+              break
+            fi
+            if [ "$lock" = $SHA ]; then
+              echo "get lock"
+              break
+            fi
+            sleep 5
+          done
+
           path="$(pwd)""/config"
           echo $path
           export KUBECONFIG_PATH=$path
