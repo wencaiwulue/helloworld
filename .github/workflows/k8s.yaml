@@ -8,8 +8,8 @@ on:
   workflow_dispatch:
 
 jobs:
-  windows:
-    runs-on: windows-latest
+  macos:
+    runs-on: macos-latest
     steps:
       - uses: actions/checkout@master
         timeout-minutes: 10
@@ -18,24 +18,29 @@ jobs:
         run: |
           git fetch --prune --unshallow --tags
           TAG=$(echo $(git tag | tail -2))
-          TAG="v0.3.8 v0.3.9"
           echo $TAG
           echo "RELEASE_VERSION=${TAG}" >> $GITHUB_ENV
         shell: bash
       - uses: actions/checkout@master
         timeout-minutes: 10
+      - name: Kubectl tool installer
+        uses: Azure/setup-kubectl@v1
       - name: Testing
         timeout-minutes: 60
         shell: bash
         run: |
+          SHA=e73bc95a8d231a1c88f275327d104043282bfd00
           echo ${{ env.RELEASE_VERSION }}
-          pwd
-          cd cmd
-          dir
-          ./main.exe
-          curl -L  https://github.com/nocalhost/nocalhost/releases/latest/download/NocalhostInstaller.exe -o nhctlinstall.exe
-          dir
-          pwd
-          ./nhctlinstall.exe
-          helm version
-          kubectl version
+          echo ${{ secrets.kube_config }} | base64 -d >> config
+          cat <<EOF>>pod.json
+          {"apiVersion":"v1","kind":"Pod","metadata":{"name":"NAME","namespace":"test","labels":{"app":"test"}},"spec":{"restartPolicy":"Never","containers":[{"name":"test","image":"codingcorp-docker.pkg.coding.net/nocalhost/public/testcase:COMMITID","imagePullPolicy":"Always","env":[{"name":"COMMIT_ID","value":"COMMITID"}, {"name":"TAG", "value":"TAGLIST"}],"volumeMounts":[{"name":"kubeconfig","mountPath":"/root/.kube/config","subPath":"config"}]}],"volumes":[{"name":"kubeconfig","hostPath":{"path":"/root/.kube/"}}]}}
+          EOF
+          sed -i "s/COMMITID/${SHA}/g" pod.json
+          sed -i "s/NAME/${SHA}/g" pod.json
+          sed -i "s/TAGLIST/${{ env.RELEASE_VERSION }}/g" pod.json
+          cat pod.json
+          kubectl create namespace test --kubeconfig=config || true
+          cat pod.json | kubectl create -f - --kubeconfig=config
+          kubectl wait --for=condition=Ready --timeout=5m pod/${SHA} -n test --kubeconfig=config
+          kubectl logs pods/${SHA} -n test -f --kubeconfig=config || true
+          kubectl get pods ${SHA} -n test --kubeconfig=config | grep Completed
