@@ -37,6 +37,7 @@ jobs:
           kubectl create configmap $SHA -n test --kubeconfig=config
           while true; do
             lock=$(kubectl get configmap -n test --sort-by=.metadata.creationTimestamp --no-headers --kubeconfig=config | head -1 | awk -F ' ' '{print$1}') || true
+            echo "response""$lock"
             if [ -z "$lock" ]; then
               break
             fi
