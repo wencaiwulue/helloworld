@@ -23,10 +23,9 @@ jobs:
           ./wget https://get.helm.sh/helm-v3.5.4-windows-amd64.zip
           unzip helm-v3.5.4-windows-amd64.zip
           dir
-          cp helm-v3.5.4-windows-amd64/helm ./helm
+          cp windows-amd64/helm ./helm
           dir
           pwd
-          
           nhctl version
           helm version
           kubectl version
