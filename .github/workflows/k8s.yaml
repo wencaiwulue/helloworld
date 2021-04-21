@@ -20,7 +20,7 @@ jobs:
           TAG=$(echo $(git tag | tail -2))
           echo $TAG
           TAG="v0.3.9 v0.3.8"
-          echo "RELEASE_VERSION='${TAG}'" >> $GITHUB_ENV
+          echo "RELEASE_VERSION=${TAG}" >> $GITHUB_ENV
         shell: bash
       - uses: actions/checkout@master
         timeout-minutes: 10
