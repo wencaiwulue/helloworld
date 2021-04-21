@@ -26,9 +26,10 @@ jobs:
           cp windows-amd64/helm ./helm
           dir
           pwd
-          SET p=%cd%
-          setx /M path"%path%;%p%"
-          PATH
+
+          ADD_PATH="$(pwd)"
+          PATH="${ADD_PATH}:${PATH}"
+          export PATH
           nhctl version
           helm version
           kubectl version
