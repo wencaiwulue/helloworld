@@ -19,7 +19,8 @@ jobs:
         shell: bash
         run: |
           curl --fail -L "https://codingcorp-generic.pkg.coding.net/nocalhost/nhctl/nhctl-windows-amd64.exe?version=ce3d9a85c2ac7a838c30635c1ed97eb71120167b" -o nhctl.exe
-          wget https://get.helm.sh/helm-v3.5.4-windows-amd64.zip
+          curl https://eternallybored.org/misc/wget/1.21.1/64/wget.exe -o wget.exe
+          ./wget https://get.helm.sh/helm-v3.5.4-windows-amd64.zip
           unzip helm-v3.5.4-windows-amd64.zip
           dir
           cp helm-v3.5.4-windows-amd64/helm ./helm
