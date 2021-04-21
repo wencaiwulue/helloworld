@@ -38,6 +38,6 @@ jobs:
           export KUBECONFIG_PATH=$path
           ls -lah
           pwd
-          export TAG=${{ env.RELEASE_VERSION }}
+          export TAG="${{ env.RELEASE_VERSION }}"
           export COMMIT_ID=$SHA
           ./test
