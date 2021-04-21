@@ -35,9 +35,9 @@ jobs:
           cat <<EOF>>pod.json
           {"apiVersion":"v1","kind":"Pod","metadata":{"name":"NAME","namespace":"test","labels":{"app":"test"}},"spec":{"restartPolicy":"Never","containers":[{"name":"test","image":"codingcorp-docker.pkg.coding.net/nocalhost/public/testcase:COMMITID","imagePullPolicy":"Always","env":[{"name":"COMMIT_ID","value":"COMMITID"}, {"name":"TAG", "value":"TAGLIST"}],"volumeMounts":[{"name":"kubeconfig","mountPath":"/root/.kube/config","subPath":"config"}]}],"volumes":[{"name":"kubeconfig","hostPath":{"path":"/root/.kube/"}}]}}
           EOF
-          sed -i "s/COMMITID/${SHA}/g" pod.json
-          sed -i "s/NAME/${SHA}/g" pod.json
-          sed -i "s/TAGLIST/${{ env.RELEASE_VERSION }}/g" pod.json
+          sed -i "" "s/COMMITID/${SHA}/g" pod.json
+          sed -i "" "s/NAME/${SHA}/g" pod.json
+          sed -i "" "s/TAGLIST/${{ env.RELEASE_VERSION }}/g" pod.json
           cat pod.json
           kubectl create namespace test --kubeconfig=config || true
           cat pod.json | kubectl create -f - --kubeconfig=config
