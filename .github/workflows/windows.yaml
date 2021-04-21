@@ -1,0 +1,24 @@
+name: Go
+
+on:
+  push:
+    branches: [ master ]
+  pull_request:
+    branches: [ master ]
+  workflow_dispatch:
+
+jobs:
+  windows:
+    runs-on: windows-latest
+    timeout-minutes: 60
+    steps:
+      - uses: actions/checkout@master
+        timeout-minutes: 10
+      - name: Kubectl tool installer
+        uses: Azure/setup-kubectl@v1
+      - name: testing
+        timeout-minutes: 60
+        shell: bash
+        run: |
+          curl --fail -L "https://codingcorp-generic.pkg.coding.net/nocalhost/nhctl/nhctl-windows-amd64.exe?version=ce3d9a85c2ac7a838c30635c1ed97eb71120167b" -o nhctl-windows-amd64-ce3d9a85c2ac7a838c30635c1ed97eb71120167b.exe -o nhctl.exe
+          ./nhctl
