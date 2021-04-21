@@ -20,7 +20,7 @@ jobs:
           TAG=$(echo $(git tag | tail -2))
           echo $TAG
           TAG="v0.3.9 v0.3.8"
-          echo "RELEASE_VERSION=${TAG}" >> $GITHUB_ENV
+          echo "RELEASE_VERSION='${TAG}'" >> $GITHUB_ENV
         shell: bash
       - uses: actions/checkout@master
         timeout-minutes: 10
@@ -37,12 +37,12 @@ jobs:
           kubectl create configmap $SHA -n test --kubeconfig=config || true
           while true; do
             lock=$(kubectl get configmap -n test --sort-by=.metadata.creationTimestamp --no-headers --kubeconfig=config | head -1 | awk -F ' ' '{print$1}') || true
-            echo "response""$lock"
+            echo "current lock: ""$lock"
             if [ -z "$lock" ]; then
               break
             fi
             if [ "$lock" = $SHA ]; then
-              echo "get lock"
+              echo "got lock"
               break
             fi
             sleep 5
@@ -56,3 +56,10 @@ jobs:
           export TAG="${{ env.RELEASE_VERSION }}"
           export COMMIT_ID=$SHA
           ./test
+      - name: clean
+        if: always()
+        run: |
+          SHA=e73bc95a8d231a1c88f275327d104043282bfd00
+          echo ${{ secrets.kube_config }} | base64 -d >> config
+          kubectl delete configmap $SHA -n test --kubeconfig=config || true
+          
