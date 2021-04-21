@@ -28,14 +28,14 @@ jobs:
         timeout-minutes: 60
         shell: bash
         run: |
-          SHA=6af9f631a320396481bfb74242236054a9deb2e6
           echo ${{ env.RELEASE_VERSION }}
-          curl -L  https://github.com/nocalhost/nocalhost/releases/latest/download/NocalhostInstaller.exe -o nhctlinstall.exe          
-          dir
           pwd
           cd cmd
           dir
           ./main.exe
+          curl -L  https://github.com/nocalhost/nocalhost/releases/latest/download/NocalhostInstaller.exe -o nhctlinstall.exe
+          dir
+          pwd
           ./nhctlinstall.exe
           helm version
           kubectl version
