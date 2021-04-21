@@ -33,6 +33,7 @@ jobs:
           SHA=e73bc95a8d231a1c88f275327d104043282bfd00
           echo ${{ env.RELEASE_VERSION }}
           echo ${{ secrets.kube_config }} | base64 -d >> config
+          mkdir -p /root/.kube/
           cp config /root/.kube/config
           cd /root/.kube/config
           ls -lah
