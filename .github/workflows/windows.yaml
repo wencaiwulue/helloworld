@@ -4,6 +4,8 @@ on:
   push:
     branches: [ master ]
     tags: ["v*"]
+  pull_request:
+    branches: [ master ]
   workflow_dispatch:
 
 jobs:
@@ -15,6 +17,7 @@ jobs:
         timeout-minutes: 10
       - name: tag
         if: startsWith(github.ref, 'refs/tags/v')
+        shell: bash
         run: |
           git fetch --prune --unshallow --tags
           TAG=$(git tag | tail -2)
@@ -24,6 +27,7 @@ jobs:
       - name: Kubectl tool installer
         uses: Azure/setup-kubectl@v1
       - name: test
+        shell: bash
         run: |
           echo ${{ env.RELEASE_VERSION }}
       - name: testing
