@@ -16,9 +16,16 @@ jobs:
       - name: tag
         if: startsWith(github.ref, 'refs/tags/v')
         run: |
-          echo ${GITHUB_REF##*/}
+          git fetch --prune --unshallow --tags
+          TAG=$(git tag | tail -2)
+          echo $TAG
+          echo "RELEASE_VERSION=${TAG}" >> $GITHUB_ENV
+          echo ${{ env.RELEASE_VERSION }}
       - name: Kubectl tool installer
         uses: Azure/setup-kubectl@v1
+      - name: test
+        run: |
+          echo ${{ env.RELEASE_VERSION }}
       - name: testing
         timeout-minutes: 60
         shell: bash
