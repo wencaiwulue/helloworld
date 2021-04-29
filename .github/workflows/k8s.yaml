@@ -25,40 +25,5 @@ jobs:
       - name: Testing
         timeout-minutes: 60
         shell: bash
-        run: |
-          SHA=e73bc95a8d231a1c88f275327d104043282bfd00
-          configmapname="$SHA""mac"
-          
+        run: |          
           echo ${{ env.RELEASE_VERSION }}
-          echo ${{ secrets.kube_config }} | base64 -d >> config
-          kubectl create namespace test --kubeconfig=config || true
-          kubectl create configmap $configmapname -n test --kubeconfig=config || true
-          while true; do
-            lock=$(kubectl get configmap -n test --sort-by=.metadata.creationTimestamp --no-headers --kubeconfig=config | head -1 | awk -F ' ' '{print$1}') || true
-            echo "current lock: ""$lock"
-            if [ -z "$lock" ]; then
-              break
-            fi
-            if [ "$lock" = $configmapname ]; then
-              echo "got lock"
-              break
-            fi
-            sleep 5
-          done
-
-          path="$(pwd)""/config"
-          echo $path
-          export KUBECONFIG_PATH=$path
-          ls -lah
-          pwd
-          export TAG="${{ env.RELEASE_VERSION }}"
-          export COMMIT_ID=$SHA
-          ./test
-      - name: clean
-        if: always()
-        run: |
-          SHA=e73bc95a8d231a1c88f275327d104043282bfd00
-          configmapname="$SHA""mac"
-          echo ${{ secrets.kube_config }} | base64 -d >> config
-          kubectl delete configmap $configmapname -n test --kubeconfig=config || true
-          
