@@ -16,6 +16,7 @@ jobs:
           TAG=$(echo $(git tag | tail -2))
           echo $TAG
           echo "RELEASE_VERSION=${TAG}" >> $GITHUB_ENV
+          echo ${{ env.RELEASE_VERSION }}
           export v1="v0.0.1"
           export v2="v0.0.2"
         shell: bash
