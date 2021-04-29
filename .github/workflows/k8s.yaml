@@ -16,7 +16,8 @@ jobs:
           TAG=$(echo $(git tag | tail -2))
           echo $TAG
           echo "RELEASE_VERSION=${TAG}" >> $GITHUB_ENV
-          echo
+          export v1="v0.0.1"
+          export v2="v0.0.2"
         shell: bash
       - uses: actions/checkout@master
         timeout-minutes: 10
@@ -27,3 +28,5 @@ jobs:
         shell: bash
         run: |          
           echo ${{ env.RELEASE_VERSION }}
+          echo $v1
+          echo $v2
