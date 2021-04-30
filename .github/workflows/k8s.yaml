@@ -4,8 +4,8 @@ on:
   workflow_dispatch:
 
 jobs:
-  macos:
-    runs-on: macos-latest
+  linux:
+    runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@master
         timeout-minutes: 10
