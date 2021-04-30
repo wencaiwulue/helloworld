@@ -19,6 +19,7 @@ jobs:
           echo $TAG >> $GITHUB_ENV
           echo 'EOF' >> $GITHUB_ENV
           echo ${{ env.RELEASE_VERSION }}
+        shell: bash
       - uses: actions/checkout@master
         timeout-minutes: 10
       - name: Kubectl tool installer
