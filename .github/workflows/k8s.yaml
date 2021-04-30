@@ -19,14 +19,12 @@ jobs:
           echo ${{ env.RELEASE_VERSION }}
           export v1="v0.0.1"
           export v2="v0.0.2"
-        shell: bash
       - uses: actions/checkout@master
         timeout-minutes: 10
       - name: Kubectl tool installer
         uses: Azure/setup-kubectl@v1
       - name: Testing
         timeout-minutes: 60
-        shell: bash
         run: |          
           echo ${{ env.RELEASE_VERSION }}
           echo $v1
