@@ -47,3 +47,15 @@ jobs:
           kubectl get nodes
           kubectl cluster-info
           kubectl get pods -A
+      - name: sleep
+        run: |
+          sleep 60
+          kubectl get nodes
+          kubectl cluster-info
+          kubectl get pods -A     
+      - name: sleep
+        run: |
+          sleep 60
+          kubectl get nodes
+          kubectl cluster-info
+          kubectl get pods -A
