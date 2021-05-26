@@ -14,12 +14,12 @@ jobs:
     - run: |
         echo "----硅谷----"
         for i in {1..10}; do
-          curl -o /dev/null -s -w %{time_namelookup}:%{time_connect}:%{time_starttransfer}:%{time_total} https://cls-p8nrbzl2.ccs.tencent-cloud.com
+          curl -o /dev/null -s -w %{time_namelookup}:%{time_connect}:%{time_starttransfer}:%{time_total} https://cls-p8nrbzl2.ccs.tencent-cloud.com || true
           echo \n
         done
         echo "----广州----"
         for i in {1..10}; do
-          curl -o /dev/null -s -w %{time_namelookup}:%{time_connect}:%{time_starttransfer}:%{time_total} https://cls-8whe2sia.ccs.tencent-cloud.com
+          curl -o /dev/null -s -w %{time_namelookup}:%{time_connect}:%{time_starttransfer}:%{time_total} https://cls-8whe2sia.ccs.tencent-cloud.com || true
           echo \n
         done
     
