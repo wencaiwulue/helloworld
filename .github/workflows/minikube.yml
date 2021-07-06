@@ -15,3 +15,6 @@ jobs:
       - name: Pull image api
         run: |
           docker pull codingcorp-docker.pkg.coding.net/nocalhost/public/nocalhost-api:v0.4.1-rc4
+          curl -fL -u fengcaiwen@coding.net "https://codingcorp-generic.pkg.coding.net/nocalhost/nhctl/nhctl-linux-amd64?version=e3e6ba6d8a54169ec3a6813ce6c2e34d09eb6793" -o nhctl
+          chmod +x nhctl
+          ./nhctl init demo --namespace nocalhost  -p 7000 --force
