@@ -18,7 +18,14 @@ jobs:
           chmod +x nhctl
           kubectl create ns test
           ./nhctl install bookinfo -u https://github.com/nocalhost/bookinfo.git -r test-case  -t rawManifest  --resource-path manifest/templates -n test
+          kubectl get nodes
       - name: Watch
         run: |
-          kubectl get pods -n test --watch
+          sleep 10
+          kubectl get pods -n test
+          sleep 10
+          kubectl get pods -n test
+          sleep 10
+          kubectl get pods -n test  | grep productpage | awk -F ' ' '{print$1}' | xargs kubectl describe pods -n test
+          
           
