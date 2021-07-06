@@ -15,59 +15,9 @@ jobs:
       - name: Setup Minikube
         uses: medyagh/setup-minikube@master
       - name: sleep
-        run: sleep 20
+        run: sleep 5
       - name: Interact with the cluster
         run: |
-          kubectl get nodes
-          kubectl cluster-info
-          kubectl get pods -A
-      - name: sleep
-        run: |
-          sleep 60
-          kubectl get nodes
-          kubectl cluster-info
-          kubectl get pods -A
-      - name: sleep
-        run: |
-          sleep 60
-          kubectl get nodes
-          kubectl cluster-info
-          kubectl get pods -A     
-      - name: sleep
-        run: |
-          sleep 60
-          kubectl get nodes
-          kubectl cluster-info
-          kubectl get pods -A
-  windows:
-    runs-on: windows-latest
-    steps:
-      - name: Checkout
-        uses: actions/checkout@v1
-      - name: Setup Minikube
-        uses: medyagh/setup-minikube@master
-      - name: sleep
-        run: sleep 20
-      - name: Interact with the cluster
-        run: |
-          kubectl get nodes
-          kubectl cluster-info
-          kubectl get pods -A
-      - name: sleep
-        run: |
-          sleep 60
-          kubectl get nodes
-          kubectl cluster-info
-          kubectl get pods -A
-      - name: sleep
-        run: |
-          sleep 60
-          kubectl get nodes
-          kubectl cluster-info
-          kubectl get pods -A     
-      - name: sleep
-        run: |
-          sleep 60
-          kubectl get nodes
-          kubectl cluster-info
-          kubectl get pods -A
+          docker pull codingcorp-docker.pkg.coding.net/nocalhost/public/nocalhost-api:v0.4.1-rc4
+          docker pull codingcorp-docker.pkg.coding.net/nocalhost/public/mariadb:10.5.8-debian-10-r0
+          docker pull codingcorp-docker.pkg.coding.net/nocalhost/public/nocalhost-web:v0.4.1-rc4
