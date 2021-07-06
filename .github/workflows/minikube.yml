@@ -21,9 +21,14 @@ jobs:
           kubectl get nodes
       - name: Watch
         run: |
+          docker pull codingcorp-docker.pkg.coding.net/nocalhost/bookinfo/productpage:latest
           sleep 10
           kubectl get pods -n test
           sleep 10
+          kubectl get pods -n test
+          sleep 10
+          kubectl get pods -n test  | grep productpage | awk -F ' ' '{print$1}' | xargs kubectl describe pods -n test
+          sleep 5
           kubectl get pods -n test
           sleep 10
           kubectl get pods -n test  | grep productpage | awk -F ' ' '{print$1}' | xargs kubectl describe pods -n test
