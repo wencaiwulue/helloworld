@@ -12,8 +12,6 @@ jobs:
     steps:
       - name: Setup Minikube
         uses: medyagh/setup-minikube@master
-      - name: Pull image
+      - name: Pull image api
         run: |
           docker pull codingcorp-docker.pkg.coding.net/nocalhost/public/nocalhost-api:v0.4.1-rc4
-          docker pull codingcorp-docker.pkg.coding.net/nocalhost/public/mariadb:10.5.8-debian-10-r0
-          docker pull codingcorp-docker.pkg.coding.net/nocalhost/public/nocalhost-web:v0.4.1-rc4
